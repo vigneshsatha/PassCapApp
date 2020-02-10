@@ -5,7 +5,7 @@ class CryptoService {
     return CryptoHelper.cryptoHelper.encrypt(value);
   }
 
-  String decrypt(String value) {
-    return CryptoHelper.cryptoHelper.decrypt(value);
+  Future<String> decrypt(String value) async {
+    return await CryptoHelper.cryptoHelper.decrypt(value);
   }
 }

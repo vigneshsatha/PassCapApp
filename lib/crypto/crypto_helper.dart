@@ -9,9 +9,10 @@ class CryptoHelper {
   var ivSecret;
   static final CryptoHelper cryptoHelper = CryptoHelper._();
   SecureStorageHelper secureStorageHelper;
-  CryptoHelper._();
-  Future _resolveSalt() async {
+  CryptoHelper._(){
     this.secureStorageHelper = new SecureStorageHelper();
+  }
+  Future _resolveSalt() async {
     var keyData = await _getSaltFromStorage();
     var ivData = await _getIvFromStorage();
     if (keyData == null || ivData == null) {
@@ -28,11 +29,11 @@ class CryptoHelper {
     }
   }
 
-  Future<dynamic> _getSaltFromStorage() async {
+  Future _getSaltFromStorage() async {
     return await this.secureStorageHelper.getValue(this.saltKey);
   }
 
-  Future<dynamic> _getIvFromStorage() async {
+  Future _getIvFromStorage() async {
     return await this.secureStorageHelper.getValue(this.secretIvKey);
   }
 
@@ -49,7 +50,8 @@ class CryptoHelper {
     return encrypted.base64;
   }
 
-  decrypt(String value) {
+  decrypt(String value) async {
+    await this._getSalt();
     var encrypter = Encrypter(AES(this.keySecret));
     final String decrypted =
         encrypter.decrypt(Encrypted.fromBase64(value), iv: this.ivSecret);

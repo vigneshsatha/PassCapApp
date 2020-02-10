@@ -36,19 +36,24 @@ class __CredViewState extends State<_CredView> {
   String _passwordMask = "*******";
   bool decryptedFlag = false;
   CryptoService _cryptoService;
-  __CredViewState(){
+  __CredViewState() {
     this._cryptoService = CryptoService();
     this._password = this._passwordMask;
   }
   void decrypt() {
-    setState(() {
-      this.decryptedFlag = !decryptedFlag;
-      if(this.decryptedFlag){
-        this._password =  this._cryptoService.decrypt(this.widget.password);
-      }else{
+    if (!this.decryptedFlag) {
+      this._cryptoService.decrypt(this.widget.password).then((data) {
+        setState(() {
+          this.decryptedFlag = !decryptedFlag;
+          this._password = data;
+        });
+      });
+    } else {
+      setState(() {
+        this.decryptedFlag = !decryptedFlag;
         this._password = this._passwordMask;
-      }
-    });
+      });
+    }
   }
 
   @override
